@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 
+	"rahuljuliato.com/go/museum/api"
 	"rahuljuliato.com/go/museum/data"
 )
 
@@ -27,7 +28,15 @@ func handleTemplate(w http.ResponseWriter, R *http.Request) {
 func main() {
 	server := http.NewServeMux()
 	server.HandleFunc("/ping", handlePing)
+
 	server.HandleFunc("/template", handleTemplate)
+
+	server.HandleFunc("/api/exhibitions", api.Get)
+	server.HandleFunc("/api/exhibitions/new", api.Post)
+
+	// After go 1.22 you can register the method as such:
+	// server.HandleFunc("GET /api/exhibitions", api.Get)
+	// server.HandleFunc("POST /api/exhibitions/new", api.Post)
 
 	fs := http.FileServer(http.Dir("./public/"))
 	server.Handle("/", fs)
